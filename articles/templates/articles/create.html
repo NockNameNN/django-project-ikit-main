@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Добавить статью{% endblock title %}
+{% block header %}Добавить статью{% endblock header %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<form method="POST" novalidate enctype="multipart/form-data">
+     {% csrf_token %}
+    {{article_form|crispy}}
+
+    <button class="btn btn-primary">Создать</button>
+</form>
+
+{% endblock content %}

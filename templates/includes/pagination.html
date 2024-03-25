@@ -1,0 +1,17 @@
+<div class="pagination mt-3">
+  <span class="step-links">
+    {% if page_obj.has_previous %}
+      <a href="?page=1" class="btn btn-outline-secondary">&laquo; Первая</a>
+      <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline-secondary">Предыдущая</a>
+    {% endif %}
+
+    <span class="current">
+      Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+    </span>
+
+    {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline-secondary">Следующая</a>
+      <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-outline-secondary">Последняя &raquo;</a>
+    {% endif %}
+  </span>
+</div>

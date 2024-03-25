@@ -1,0 +1,35 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Главная страница{% endblock title %} | Название компании</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+</head>
+<body>
+    <h1 class="text-center p-5"> {% block header %}Главная страница{% endblock header %}</h1>
+
+    {% include "includes/nav.html" %}
+
+    {% if messages %}
+    <div class="container">
+        {% if messages %}
+
+            {% for message in messages %}
+            <div{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</div>
+            {% endfor %}
+
+        {% endif %}
+    </div>
+    {% endif %}
+
+
+    <div class="mt-5 container">
+        {% block content %}{% endblock content %}
+     </div>
+
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

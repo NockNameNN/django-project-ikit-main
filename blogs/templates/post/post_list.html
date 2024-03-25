@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Список постов{% endblock title %}
+{% block header %}Список постов{% endblock header %}
+
+{% block content %}
+
+<a href="{% url 'post_new' %}" class="btn btn-primary mb-3">Создать пост</a>
+<form method="GET">
+  {{ form.as_p }}
+  <button type="submit">Фильтровать</button>
+  <button type="submit" name="reset">Сброс</button>
+</form><br>
+<div class="row row-cols-1 row-cols-md-3 g-4">
+  {% for post in filtered_posts %}
+  <div class="col">
+    <div class="card h-100">
+      <img src="{{ post.featured_image.url }}" class="card-img-top" alt="{{ post.name }}">
+      <div class="card-body">
+        <h5 class="card-title">{{ post.name }}</h5>
+        <p class="card-text">{{ post.description|truncatewords:20|safe }}</p>
+        <p class="card-text"><strong>Категория:</strong> {{ post.category }}</p>
+        <p class="card-text"><strong>Тэги:</strong>
+          {% for tag in post.tags.all %}
+            {{ tag.name }}
+            {% if not forloop.last %}, {% endif %}
+          {% endfor %}
+        </p>
+        <p class="card-text"><strong>Автор:</strong> {{ post.author }}</p>
+      </div>
+      <div class="card-footer">
+        <a href="{{ post.get_absolute_url }}" class="btn btn-success">Подробнее</a>
+          {% if request.user == post.author %}
+            <a href="{% url 'post_delete' post.pk %}" class="btn btn-danger">Удалить</a>
+          {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% include 'includes/pagination.html' %}
+
+{% endblock content %}
