@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.db import IntegrityError
-from django.http import HttpResponseServerError, HttpResponseRedirect
+from django.http import HttpResponseServerError, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -31,6 +31,7 @@ class BlogListView(ListView):
         search_query = self.request.GET.get('search_query')
         category = self.request.GET.get('category')
         tag = self.request.GET.get('tag')
+        author = self.request.GET.get('author')
 
         if search_query:
             queryset = queryset.filter(name__icontains=search_query) | queryset.filter(description__icontains=search_query)
@@ -38,8 +39,10 @@ class BlogListView(ListView):
             queryset = queryset.filter(category=category)
         if tag:
             queryset = queryset.filter(tags=tag)
+        if author:
+            queryset = queryset.filter(author=author)
 
-        if not category and not tag and not search_query:
+        if not category and not tag and not author and not search_query:
             queryset = Post.objects.all()
 
         if 'reset' in self.request.GET:
@@ -110,6 +113,10 @@ class BlogUpdateView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         except IntegrityError:
             messages.error(self.request, "Пост с таким названием уже существует!")
             return HttpResponseRedirect(reverse("post_new"))
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.get_object().author != self.request:
+            raise Http404()
 
 
 class BlogDeleteView(LoginRequiredMixin, DeleteView):

@@ -13,12 +13,10 @@
 <p>{{ post.description|safe }}</p>
 
 <hr>
-{% if request.user == post.author %}
     <div class="d-flex gap-1">
-    <a class="btn btn-success" href="{% url 'post_edit' post.pk %}"> Редактировать</a>
-    <a class="btn btn-danger" href="{% url 'post_delete' post.pk %}"> Удалить</a>
+        <a class="btn btn-success" href="{% url 'post_edit' post.pk %}"> Редактировать</a>
+        <a class="btn btn-danger" href="{% url 'post_delete' post.pk %}"> Удалить</a>
     </div>
-{% endif %}
 
 <form method="post">
     {% csrf_token %}
