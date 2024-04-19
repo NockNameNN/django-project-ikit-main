@@ -19,20 +19,20 @@
       <div class="card-body">
         <h5 class="card-title">{{ post.name }}</h5>
         <p class="card-text">{{ post.description|truncatewords:20|safe }}</p>
-        <p class="card-text"><strong>Категория:</strong> {{ post.category }}</p>
+          <p class="card-text"><strong>Категория:</strong> <a href="{% url 'post_list' %}?category={{ post.category.id }}"> {{ post.category }} </a></p>
         <p class="card-text"><strong>Тэги:</strong>
           {% for tag in post.tags.all %}
-            {{ tag.name }}
+              <a href="{% url 'post_list' %}?tag={{ tag.id }}">
+                {{ tag.name }}
+              </a>
             {% if not forloop.last %}, {% endif %}
           {% endfor %}
         </p>
-        <p class="card-text"><strong>Автор:</strong> {{ post.author }}</p>
+          <p class="card-text"><strong>Автор:</strong> <a href="{% url 'post_list' %}?author={{ post.author.id }}">{{ post.author }}</a></p>
       </div>
       <div class="card-footer">
         <a href="{{ post.get_absolute_url }}" class="btn btn-success">Подробнее</a>
-          {% if request.user == post.author %}
-            <a href="{% url 'post_delete' post.pk %}" class="btn btn-danger">Удалить</a>
-          {% endif %}
+        <a href="{% url 'post_delete' post.pk %}" class="btn btn-danger">Удалить</a>
       </div>
     </div>
   </div>
