@@ -1,8 +1,11 @@
 from rest_framework import viewsets, permissions
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.response import Response
+
 from .serializers import PostSerializer, CategorySerializer, CommentSerializer
 from blogs.models import Post, Category, Comment
 from .filters import PostFilter
+
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.select_related('category').all()
@@ -10,6 +13,11 @@ class PostViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_class = PostFilter
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class CategoryViewSet(viewsets.ModelViewSet):

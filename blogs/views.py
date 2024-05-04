@@ -20,6 +20,8 @@ from .models import Post, Comment
 
 def page_not_found_view(request, exception):
     return render(request, '404.html', {})
+
+
 class BlogListView(ListView):
     model = Post
     paginate_by = 2
@@ -63,7 +65,7 @@ class BlogDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         post = self.get_object()
-        comments = post.comment_set.all()
+        comments = post.comments.all()
         context['comment_form'] = CommentForm()
         context['comments'] = comments
         return context
@@ -127,16 +129,6 @@ class BlogDeleteView(LoginRequiredMixin, DeleteView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(author=self.request.user)
-
-
-class CommentCreateView(CreateView):
-    model = Comment
-    form_class = CommentForm
-
-    def form_valid(self, form):
-        form.instance.author = self.request.user
-        form.instance.post_id = self.kwargs['pk']
-        form.save()
 
 
 def delete_comment(request, pk):

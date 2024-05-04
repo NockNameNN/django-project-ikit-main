@@ -19,17 +19,25 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
-    category = CategorySerializer(read_only=True)
-    comments = CommentSerializer(many=True, read_only=True)
+    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
+    comments = serializers.SerializerMethodField()
 
     class Meta:
         fields = (
             "id",
             "name",
             "description",
+            "slug",
             "author",
             "tags",
             "category",
             "comments",
         )
         model = Post
+
+    def get_comments(self, instance):
+        include_comments = self.context['request'].query_params.get('include') == 'comments'
+        if include_comments:
+            return CommentSerializer(instance.comments.all(), many=True).data
+        else:
+            return None
