@@ -38,7 +38,7 @@ class Comment(models.Model):
 class Post(models.Model):
     name = models.CharField(max_length=255, verbose_name="Имя")
     description = models.TextField(verbose_name="Описание")
-    slug = models.SlugField(unique=True, blank=True)
+    slug = models.SlugField(unique=True, blank=True, null=True)
     author = models.ForeignKey('auth.User', on_delete=models.PROTECT, default=1)
     tags = models.ManyToManyField(Tag, verbose_name="Тэги", blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.PROTECT, default=0, verbose_name="Категория")
