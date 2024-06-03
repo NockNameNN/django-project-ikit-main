@@ -149,3 +149,23 @@ def delete_comment(request, pk):
     else:
         messages.error(request, 'У вас нет прав на удаление этого комментария.')
     return HttpResponseRedirect(reverse('post_detail', kwargs={'category': category, 'slug': slug}))
+
+
+class CommentUpdateView(UpdateView):
+    model = Comment
+    form_class = CommentForm
+
+    def get_object(self, queryset=None):
+        comment = super().get_object(queryset)
+        if comment.author != self.request.user:
+            messages.error(self.request, 'У вас нет прав на редактирование этого комментария.')
+            return redirect('post_detail', category=comment.post.category.slug, slug=comment.post.slug)
+        return comment
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Комментарий успешно обновлен.')
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        comment = self.object
+        return reverse('post_detail', kwargs={'category': comment.post.category.slug, 'slug': comment.post.slug})
